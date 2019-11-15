@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title> Sign Up Page </title>
+    <script>
+        $(document).ready(function () {
+            $("#photos").hide();
+            //Event listener
+            $("#submit").click(function () {
+                var searchText = $("#searchText").val();
+                //Validation
+                if (isFormValid()) {
+                    $.ajax({
+                        method: "GET",
+                        url: "https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=3598ff40cf69fe03d706884090748345&text=" + searchText + "&per_page=3&format=json&nojsoncallback=1",
+                        dataType: "json",
+                        data: { "state": $("#state").val() },
+                        success: function(result,status) {
+                            console.log(result);
+                            console.log(result.photos.photo[0]);
+                            for (var i = 0; i < result.photos.photo.length; i++) {
+                                var id = "#photo" + i;
+                                var photo = result.photos.photo[i];
+                                var url = "https://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
+                                $(id).attr("src", url);
+                            }
+                            $("#photos").show();
+
+                            //$("#my_image").attr("src", "second.jpg");
+                            //$("#my_image").attr("src","second.jpg");
+                            //$("#my_image").attr("src","second.jpg");
+                            //result.photos.photo[0].farm
+                            //result.photos.photo[0].server
+                            //result.photos.photo[0].id
+                            //result.photos.photo[0].secret
+
+                            //result.photos.photo[1].farm
+                            //result.photos.photo[2].farm
+
+                            /*$("#state").html("<option> Select One </option>");
+                            for (let i = 0; i < result.length; i++) {
+                                $("#state").append("<option value='" +result[i].usps + "'>" + result[i].state + "</option>");
+                            }*/
+                    } 
+                });//ajax
+                }
+            })
+
+            //example:
+            //https://farm66.staticflickr.com/65535/49067887557_f33c2b26d5_m.jpg
+            //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
+            function isFormValid() {
+                return $("#searchText").val().length > 0;
+            }
+        });
+    </script>
+</head>
+	<body>
+        <div class="container">
+            <h1>Search for Photos:</h1>
+            <form class="mb-3">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Search</label>
+                    <input type="text" class="form-control" id="searchText" aria-describedby="emailHelp" placeholder="Enter Search Text">
+                </div>
+                <button id="submit" type="button" class="btn btn-primary">Submit</button>
+            </form>
+
+            <div id="photos">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="card" style="width: 18rem;">
+                            <img id="photo0" class="card-img-top" src="" alt="Card image cap">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card" style="width: 18rem;">
+                            <img id="photo1" class="card-img-top" src="" alt="Card image cap">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card" style="width: 18rem;">
+                            <img id="photo2" class="card-img-top" src="" alt="Card image cap">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</body>
+</html>
